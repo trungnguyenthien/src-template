@@ -10,10 +10,11 @@ plugins {
 group = "io.github.kotlin"
 version = "1.0.0"
 artifactId = "library"
+androidLibraryNamespace = "org.jetbrains.kotlinx.multiplatform.library.template"
 
 kotlin {
     androidLibrary {
-        namespace = "org.jetbrains.kotlinx.multiplatform.library.template"
+        namespace = androidLibraryNamespace
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
