@@ -11,7 +11,6 @@ group = "io.github.kotlin"
 version = "1.0.0"
 
 kotlin {
-    jvm()
     androidLibrary {
         namespace = "org.jetbrains.kotlinx.multiplatform.library.template"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -34,7 +33,6 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    linuxX64()
 
     sourceSets {
         commonMain.dependencies {
@@ -48,9 +46,6 @@ kotlin {
 }
 
 mavenPublishing {
-    publishToMavenCentral()
-
-    signAllPublications()
 
     coordinates(group.toString(), "library", version.toString())
 
@@ -65,18 +60,6 @@ mavenPublishing {
                 url = "YYY"
                 distribution = "ZZZ"
             }
-        }
-        developers {
-            developer {
-                id = "XXX"
-                name = "YYY"
-                url = "ZZZ"
-            }
-        }
-        scm {
-            url = "XXX"
-            connection = "YYY"
-            developerConnection = "ZZZ"
         }
     }
 }
