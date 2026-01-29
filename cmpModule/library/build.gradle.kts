@@ -9,6 +9,7 @@ plugins {
 
 group = "io.github.kotlin"
 version = "1.0.0"
+artifactId = "library"
 
 kotlin {
     androidLibrary {
@@ -46,9 +47,7 @@ kotlin {
 }
 
 mavenPublishing {
-
-    coordinates(group.toString(), "library", version.toString())
-
+    coordinates(group.toString(), artifactId.toString(), version.toString())
     pom {
         name = "My library"
         description = "A library."
