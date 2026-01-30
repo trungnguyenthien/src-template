@@ -42,7 +42,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // dependencies
+            implementation(compose.runtime)
         }
 
         commonTest.dependencies {
