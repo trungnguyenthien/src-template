@@ -11,36 +11,38 @@ plugins {
 
 group = "io.github.kotlin"
 version = "1.0.0"
-val artifactId = "library"
-val androidLibraryNamespace = "org.jetbrains.kotlinx.multiplatform.library.template"
+
+val myArtifactId = "library"
+val myAndroidLibraryNamespace = "org.jetbrains.kotlinx.multiplatform.library.template"
 
 kotlin {
     androidLibrary {
-        namespace = androidLibraryNamespace.toString()
+        namespace = myAndroidLibraryNamespace
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
-        withJava() // enable java compilation support
+        withJava()
         withHostTestBuilder {}.configure {}
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
         }
 
         compilations.configureEach {
-            compilerOptions.configure {
-                jvmTarget.set(
-                    JvmTarget.JVM_11
-                )
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_11)
+                }
             }
         }
     }
+
     iosX64()
     iosArm64()
     iosSimulatorArm64()
 
     sourceSets {
         commonMain.dependencies {
-            //put your multiplatform dependencies here
+            // dependencies
         }
 
         commonTest.dependencies {
@@ -50,7 +52,7 @@ kotlin {
 }
 
 mavenPublishing {
-    coordinates(group.toString(), artifactId.toString(), version.toString())
+    coordinates(group.toString(), myArtifactId, version.toString())
     pom {
         name = "My library"
         description = "A library."
