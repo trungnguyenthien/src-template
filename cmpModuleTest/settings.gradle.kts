@@ -25,7 +25,11 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        mavenLocal() // Add Maven Local to find published library
     }
 }
 
 include(":composeApp")
+
+// Library will be used from Maven Local repository
+// Use: ./gradlew :library:publishToMavenLocal from cmpModule project
