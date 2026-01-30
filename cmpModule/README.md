@@ -9,6 +9,7 @@ Template để tạo Kotlin Multiplatform library với khả năng tích hợp 
 - [Cấu trúc project](#cấu-trúc-project)
 - [Thêm class mới với native integration](#thêm-class-mới-với-native-integration)
 - [Build và publish library](#build-và-publish-library)
+- [Cấu hình trong Consumer App](#️-cấu-hình-trong-consumer-app)
 - [Sử dụng library](#sử-dụng-library)
 
 ---
@@ -48,79 +49,7 @@ yourApp/
 
 ---
 
-## ⚙️ Cấu hình trong Consumer App
-
-### 1. settings.gradle.kts
-
-```kotlin
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal() // Thêm Maven Local để sử dụng library đã publish
-    }
-}
-```
-
-### 2. composeApp/build.gradle.kts
-
-```kotlin
-plugins {
-    kotlin("multiplatform")
-    kotlin("native.cocoapods") // Cần nếu library dùng CocoaPods
-    id("com.android.application")
-}
-
-kotlin {
-    // Targets...
-    androidTarget()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    
-    // CocoaPods nếu library có native dependencies
-    cocoapods {
-        summary = "Your app"
-        version = "1.0.0"
-        ios.deploymentTarget = "13.0"
-        
-        // Add các pods mà library cần
-        pod("AFNetworking") { 
-            version = "~> 4.0" 
-        }
-    }
-    
-    sourceSets {
-        commonMain.dependencies {
-            // Thêm library dependency
-            implementation("io.github.kotlin:library:1.0.0")
-        }
-    }
-}
-```
-
-### 3. local.properties
-
-```properties
-# Android SDK location
-sdk.dir=/Users/username/Library/Android/sdk
-```
-
-### 4. gradle.properties
-
-```properties
-# CocoaPods compatibility (nếu cần)
-kotlin.apple.deprecated.allowUsingEmbedAndSignWithCocoaPodsDependencies=true
-kotlin.apple.xcodeCompatibility.nowarn=true
-
-# Android
-android.useAndroidX=true
-android.nonTransitiveRClass=true
-```
-
----
-
-## ➕ Thêm class mới với native integration
+#  🎯 Library Module: Thêm mới class/function
 
 ### Bước 1: Định nghĩa expect class trong `commonMain`
 
@@ -187,38 +116,15 @@ actual class YourClass {
 **Cấu hình CocoaPods trong `build.gradle.kts`:**
 
 ```kotlin
-kotlQuick Start
-
-**1. Publish library:**
-
-```bash
-cd cmpModule
-./gradlew :library:publishToMavenLocal
-```
-
-**2. Trong consumer app, thêm dependency:**
-
-```kotlin
-// build.gradle.kts
-sourceSets {
-    commonMain.dependencies {
-        implementation("io.github.kotlin:library:1.0.0")
-    }
-}
-```
-
-**3. Sử dụng:**
-
-```kotlin
-import org.jetbrains.kotlinx.multiplatform.library.template.Networking
-
-suspend fun example() {
-    val networking = Networking()
-    val response = networking.get("https://api.example.com/data")
-}
-```
-
-Chi tiết cấu hình xem [phần trên](#️-cấu-hình-trong-consumer-app).     )
+kotlin {
+    cocoapods {
+        summary = "Library template"
+        version = "1.0.0"
+        ios.deploymentTarget = "13.0"
+        
+        pod("YourPod") {
+            version = "~> 1.0"
+        }
     }
 }
 ```
@@ -265,64 +171,53 @@ Expected files:
 
 ---
 
-## 📦 Sử dụng library
+# ⚙️ Consumer App: Import Library Module 
 
-### Trong consumer project
-
-**1. Configure `settings.gradle.kts`:**
+### 1. settings.gradle.kts
 
 ```kotlin
 dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        mavenLocal() // Add for local development
+        mavenLocal() // Thêm Maven Local để sử dụng library đã publish
     }
 }
 ```
 
-**2. Thêm dependency trong `build.gradle.kts`:**
-
-```kotlin
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            implementation("io.github.kotlin:library:1.0.0")
-        }
-    }
-}
-```
-
-**3. Sử dụng trong code:**
-
-```kotlin
-import org.jetbrains.kotlinx.multiplatform.library.template.Networking
-
-suspend fun example() {
-    val networking = Networking()
-    val response = networking.get("https://api.example.com/data")
-    println(response)
-}
-```
-
-### Cho iOS projects với CocoaPods dependencies
-
-**Thêm CocoaPods plugin:**
+### 2. composeApp/build.gradle.kts
 
 ```kotlin
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
+    kotlin("native.cocoapods") // Cần nếu library dùng CocoaPods
+    id("com.android.application")
 }
 
 kotlin {
+    // Targets...
+    androidTarget()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    
+    // CocoaPods nếu library có native dependencies
     cocoapods {
         summary = "Your app"
         version = "1.0.0"
         ios.deploymentTarget = "13.0"
         
-        // Cần add pods mà library sử dụng
-        pod("AFNetworking") { version = "~> 4.0" }
+        // Add các pods mà library cần
+        pod("AFNetworking") { 
+            version = "~> 4.0" 
+        }
+    }
+    
+    sourceSets {
+        commonMain.dependencies {
+            // Thêm library dependency
+            implementation("io.github.kotlin:library:1.0.0")
+        }
     }
 }
 ```
@@ -332,6 +227,22 @@ kotlin {
 ```properties
 kotlin.apple.deprecated.allowUsingEmbedAndSignWithCocoaPodsDependencies=true
 kotlin.apple.xcodeCompatibility.nowarn=true
+```
+
+---
+
+## 📦 Sử dụng library
+
+Sau khi đã [cấu hình Consumer App](#️-cấu-hình-trong-consumer-app), sử dụng library trong code:
+
+```kotlin
+import org.jetbrains.kotlinx.multiplatform.library.template.Networking
+
+suspend fun example() {
+    val networking = Networking()
+    val response = networking.get("https://api.example.com/data")
+    println(response)
+}
 ```
 
 ---
