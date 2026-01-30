@@ -15,13 +15,107 @@ Template để tạo Kotlin Multiplatform library với khả năng tích hợp 
 
 ## 🏗️ Cấu trúc project
 
+### Library Module
+
 ```
-library/
-├── build.gradle.kts           # Cấu hình build với CocoaPods
-├── src/
-│   ├── commonMain/kotlin/     # Định nghĩa expect classes
-│   ├── androidMain/kotlin/    # Implement cho Android
-│   └── iosMain/kotlin/        # Implement cho iOS
+cmpModule/
+├── gradle/
+│   └── libs.versions.toml      # Version catalog cho dependencies
+├── library/
+│   ├── build.gradle.kts        # 🔥 Cấu hình build với CocoaPods
+│   └── src/
+│       ├── commonMain/kotlin/  # Định nghĩa expect classes
+│       ├── androidMain/kotlin/ # Implement cho Android
+│       ├── iosMain/kotlin/     # Implement cho iOS
+│       └── commonTest/kotlin/  # Common unit tests
+└── settings.gradle.kts         # 🔥 Project settings
+```
+
+### Consumer App (sử dụng library)
+
+```
+yourApp/
+├── gradle/
+│   └── libs.versions.toml
+├── composeApp/
+│   ├── build.gradle.kts        # 🔥 App build config + library dependency
+│   └── src/
+│       ├── commonMain/kotlin/  # App code sử dụng library
+│       ├── androidMain/kotlin/
+│       └── iosMain/kotlin/
+└── settings.gradle.kts         # 🔥 Cấu hình mavenLocal()
+```
+
+---
+
+## ⚙️ Cấu hình trong Consumer App
+
+### 1. settings.gradle.kts
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal() // Thêm Maven Local để sử dụng library đã publish
+    }
+}
+```
+
+### 2. composeApp/build.gradle.kts
+
+```kotlin
+plugins {
+    kotlin("multiplatform")
+    kotlin("native.cocoapods") // Cần nếu library dùng CocoaPods
+    id("com.android.application")
+}
+
+kotlin {
+    // Targets...
+    androidTarget()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    
+    // CocoaPods nếu library có native dependencies
+    cocoapods {
+        summary = "Your app"
+        version = "1.0.0"
+        ios.deploymentTarget = "13.0"
+        
+        // Add các pods mà library cần
+        pod("AFNetworking") { 
+            version = "~> 4.0" 
+        }
+    }
+    
+    sourceSets {
+        commonMain.dependencies {
+            // Thêm library dependency
+            implementation("io.github.kotlin:library:1.0.0")
+        }
+    }
+}
+```
+
+### 3. local.properties
+
+```properties
+# Android SDK location
+sdk.dir=/Users/username/Library/Android/sdk
+```
+
+### 4. gradle.properties
+
+```properties
+# CocoaPods compatibility (nếu cần)
+kotlin.apple.deprecated.allowUsingEmbedAndSignWithCocoaPodsDependencies=true
+kotlin.apple.xcodeCompatibility.nowarn=true
+
+# Android
+android.useAndroidX=true
+android.nonTransitiveRClass=true
 ```
 
 ---
@@ -93,72 +187,38 @@ actual class YourClass {
 **Cấu hình CocoaPods trong `build.gradle.kts`:**
 
 ```kotlin
-kotlin {
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    
-    cocoapods {
-        summary = "Your library description"
-        homepage = "https://github.com/your-repo"
-        version = "1.0.0"
-        ios.deploymentTarget = "13.0"
-        
-        // Thêm CocoaPods dependency
-        pod("YourPodName") {
-            version = "~> 1.0"
-        }
+kotlQuick Start
+
+**1. Publish library:**
+
+```bash
+cd cmpModule
+./gradlew :library:publishToMavenLocal
+```
+
+**2. Trong consumer app, thêm dependency:**
+
+```kotlin
+// build.gradle.kts
+sourceSets {
+    commonMain.dependencies {
+        implementation("io.github.kotlin:library:1.0.0")
     }
 }
 ```
 
----
-
-## 📦 Sample: Networking Class
-
-Template này có sẵn class `Networking` demo cách integrate OkHttp (Android) và AFNetworking (iOS).
-
-### Common Interface
+**3. Sử dụng:**
 
 ```kotlin
-expect class Networking() {
-    suspend fun get(url: String): String
+import org.jetbrains.kotlinx.multiplatform.library.template.Networking
+
+suspend fun example() {
+    val networking = Networking()
+    val response = networking.get("https://api.example.com/data")
 }
 ```
 
-### Android Implementation
-
-```kotlin
-actual class Networking {
-    private val client = OkHttpClient()
-    
-    actual suspend fun get(url: String): String = withContext(Dispatchers.IO) {
-        val request = Request.Builder().url(url).build()
-        client.newCall(request).execute().use { response ->
-            response.body?.string() ?: ""
-        }
-    }
-}
-```
-
-### iOS Implementation
-
-```kotlin
-actual class Networking {
-    private val manager = AFHTTPSessionManager()
-    
-    actual suspend fun get(url: String): String = suspendCancellableCoroutine { continuation ->
-        manager.GET(url, parameters = null, headers = null, progress = null,
-            success = { _, responseObject ->
-                val response = (responseObject as? NSData)?.let { 
-                    NSString.create(it, NSUTF8StringEncoding) as String 
-                } ?: ""
-                continuation.resume(response)
-            },
-            failure = { _, error ->
-                continuation.resumeWithException(Exception(error?.localizedDescription))
-            }
-        )
+Chi tiết cấu hình xem [phần trên](#️-cấu-hình-trong-consumer-app).     )
     }
 }
 ```
