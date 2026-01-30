@@ -59,7 +59,7 @@ actual class Networking actual constructor() {
         
         // Handle coroutine cancellation
         continuation.invokeOnCancellation {
-            manager.invalidateSessionCancelingTasks(true)
+            manager.invalidateSessionCancelingTasks(true, resetSession = false)
         }
     }
     
@@ -109,7 +109,7 @@ actual class Networking actual constructor() {
         
         // Handle coroutine cancellation
         continuation.invokeOnCancellation {
-            manager.invalidateSessionCancelingTasks(true)
+            manager.invalidateSessionCancelingTasks(true, resetSession = false)
         }
     }
 }
