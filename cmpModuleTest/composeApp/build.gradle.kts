@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
-    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -26,19 +25,6 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-        }
-    }
-
-    // CocoaPods configuration for iOS native libraries
-    cocoapods {
-        summary = "Compose Multiplatform Test App"
-        homepage = "https://github.com/JetBrains/compose-multiplatform"
-        version = "1.0.0"
-        ios.deploymentTarget = "13.0"
-        
-        // AFNetworking needed for library's iOS implementation
-        pod("AFNetworking") {
-            version = "~> 4.0"
         }
     }
 
