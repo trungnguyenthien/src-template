@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import org.jetbrains.kotlinx.multiplatform.library.template.Networking
+import io.github.trungnguyenthien.Networking
 
 /**
  * Demo screen using Networking from library module

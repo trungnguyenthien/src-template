@@ -1,4 +1,4 @@
-package org.jetbrains.kotlinx.multiplatform.library.template
+package io.github.trungnguyenthien
 
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.cinterop.*

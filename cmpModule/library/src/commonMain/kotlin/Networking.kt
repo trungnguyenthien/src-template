@@ -1,4 +1,4 @@
-package org.jetbrains.kotlinx.multiplatform.library.template
+package io.github.trungnguyenthien
 
 /**
  * Expected Networking class that will have platform-specific implementations.

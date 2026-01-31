@@ -56,7 +56,7 @@ yourApp/
 **File:** `src/commonMain/kotlin/YourClass.kt`
 
 ```kotlin
-package org.jetbrains.kotlinx.multiplatform.library.template
+package io.github.trungnguyenthien
 
 expect class YourClass() {
     suspend fun yourMethod(param: String): String
@@ -68,7 +68,7 @@ expect class YourClass() {
 **File:** `src/androidMain/kotlin/YourClass.android.kt`
 
 ```kotlin
-package org.jetbrains.kotlinx.multiplatform.library.template
+package io.github.trungnguyenthien
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -98,7 +98,7 @@ sourceSets {
 **File:** `src/iosMain/kotlin/YourClass.ios.kt`
 
 ```kotlin
-package org.jetbrains.kotlinx.multiplatform.library.template
+package io.github.trungnguyenthien
 
 import cocoapods.YourPod.*
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -236,7 +236,7 @@ kotlin.apple.xcodeCompatibility.nowarn=true
 Sau khi đã [cấu hình Consumer App](#️-cấu-hình-trong-consumer-app), sử dụng library trong code:
 
 ```kotlin
-import org.jetbrains.kotlinx.multiplatform.library.template.Networking
+import io.github.trungnguyenthien.Networking
 
 suspend fun example() {
     val networking = Networking()

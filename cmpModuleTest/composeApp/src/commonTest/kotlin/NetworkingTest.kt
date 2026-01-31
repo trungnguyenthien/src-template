@@ -1,6 +1,6 @@
 package com.jetbrains.kmpapp
 
-import org.jetbrains.kotlinx.multiplatform.library.template.Networking
+import io.github.trungnguyenthien.Networking
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue

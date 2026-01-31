@@ -14,7 +14,7 @@ group = "io.github.kotlin"
 version = "1.0.0"
 
 val myArtifactId = "library"
-val myAndroidLibraryNamespace = "org.jetbrains.kotlinx.multiplatform.library.template"
+val myAndroidLibraryNamespace = "io.github.trungnguyenthien"
 
 kotlin {
     androidLibrary {
