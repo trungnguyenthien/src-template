@@ -31,7 +31,7 @@ fun App() {
     ) {
         Surface {
             val navController: NavHostController = rememberNavController()
-            NavHost(navController = navController, startDestination = ListDestination) {
+            NavHost(navController = navController, startDestination = NetworkingDemoDestination) {
                 composable<NetworkingDemoDestination> {
                     NetworkingDemoScreen()
                 }

@@ -38,6 +38,46 @@ fun NetworkingDemoScreen() {
                 setLoading(true)
                 scope.launch {
                     try {
+                        // Test với IP address để bypass DNS
+                        val result = networking.get("http://142.250.185.46")
+                        setResponse("IP Test Success! Length: ${result.length}")
+                    } catch (e: Exception) {
+                        setResponse("IP Test Error: ${e.message}\n\nEmulator không có internet. Vui lòng:\n1. Restart emulator\n2. Check WiFi/Network settings\n3. Try cold boot emulator")
+                    } finally {
+                        setLoading(false)
+                    }
+                }
+            },
+            enabled = !isLoading
+        ) {
+            Text("Test IP (bypass DNS)")
+        }
+        
+        Button(
+            onClick = {
+                setLoading(true)
+                scope.launch {
+                    try {
+                        // Test với Google trước để verify network
+                        val result = networking.get("https://www.google.com")
+                        setResponse("Google Success! Length: ${result.length}")
+                    } catch (e: Exception) {
+                        setResponse("Google Error: ${e.message}")
+                    } finally {
+                        setLoading(false)
+                    }
+                }
+            },
+            enabled = !isLoading
+        ) {
+            Text("Test Google (verify network)")
+        }
+        
+        Button(
+            onClick = {
+                setLoading(true)
+                scope.launch {
+                    try {
                         val result = networking.get("https://httpbin.org/get")
                         setResponse("GET Success:\n$result")
                     } catch (e: Exception) {
