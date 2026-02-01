@@ -81,7 +81,7 @@ generate_integration_doc() {
     cat > INTEGRATION.md << EOF
 # Library Integration Guide
 
-Hướng dẫn tích hợp library **$artifact** vào Consumer App (Kotlin Multiplatform).
+Integration guide for **$artifact** library into Consumer App (Kotlin Multiplatform).
 
 ## 📦 Library Information
 
@@ -100,23 +100,22 @@ Hướng dẫn tích hợp library **$artifact** vào Consumer App (Kotlin Multi
 
 ### Step 1: Add Maven Repository
 
-Thêm Maven repository vào \`settings.gradle.kts\`:
+Add Maven repository to \`settings.gradle.kts\`:
 
 \`\`\`kotlin
 dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        mavenLocal() // For local development
-        // Hoặc Maven remote repository của bạn
-        // maven("https://your-maven-repo.com/releases")
+        mavenLocal() // ✅ For local development
+        // maven("https://your-maven-repo.com/releases") // ✅ Or your Maven remote repository
     }
 }
 \`\`\`
 
 ### Step 2: Add Dependency
 
-Trong \`build.gradle.kts\` của shared module:
+In your shared module's \`build.gradle.kts\`:
 
 \`\`\`kotlin
 kotlin {
@@ -130,16 +129,16 @@ kotlin {
 
 ### Step 3: iOS Frameworks Integration
 
-Library này yêu cầu các iOS frameworks sau đây trong iOS project của bạn:
+This library requires the following iOS frameworks in your iOS project:
 
 $ios_frameworks_list
 
-**Bạn có thể integrate các frameworks này bằng một trong các cách:**
-- **CocoaPods**: Thêm các pod tương ứng vào Podfile
-- **Swift Package Manager**: Thêm các package dependencies tương ứng
-- **Manual**: Download và link frameworks thủ công
+**You can integrate these frameworks using one of the following methods:**
+- **CocoaPods**: Add corresponding pods to Podfile
+- **Swift Package Manager**: Add corresponding package dependencies
+- **Manual**: Download and link frameworks manually
 
-**Quan trọng**: Đảm bảo tất cả các frameworks trên được integrate đầy đủ vào iOS project, nếu không app sẽ bị crash khi runtime với lỗi "framework not found" hoặc "undefined symbol".
+**Important**: Ensure all frameworks above are properly integrated into your iOS project, otherwise the app will crash at runtime with "framework not found" or "undefined symbol" errors.
 
 ### Step 4: Sync Project
 
@@ -151,54 +150,54 @@ $ios_frameworks_list
 ./gradlew build
 \`\`\`
 
-##  Platform-Specific Implementation
+## 🔧 Platform-Specific Implementation
 
 ### iOS
-- Library sử dụng native iOS frameworks được liệt kê ở Step 3
-- Hỗ trợ iOS 13.0+
-- Cần đảm bảo tất cả frameworks dependencies được link đúng
+- Library uses native iOS frameworks listed in Step 3
+- Supports iOS 13.0+
+- Ensure all framework dependencies are properly linked
 
 ## 🐛 Troubleshooting
 
-### iOS: "framework not found" hoặc "Undefined symbol"
+### iOS: "framework not found" or "Undefined symbol"
 
-**Nguyên nhân**: Thiếu iOS frameworks dependencies.
+**Cause**: Missing iOS framework dependencies.
 
 **Solution:**
-1. Kiểm tra lại Step 3 - đảm bảo đã integrate tất cả frameworks cần thiết
-2. Nếu dùng CocoaPods:
-   - Chạy \`pod install\`
-   - Mở \`*.xcworkspace\` (KHÔNG phải .xcodeproj)
+1. Check Step 3 - ensure all required frameworks are integrated
+2. If using CocoaPods:
+   - Run \`pod install\`
+   - Open \`*.xcworkspace\` (NOT .xcodeproj)
    - Clean build: Product → Clean Build Folder
-3. Nếu dùng SPM:
+3. If using SPM:
    - File → Add Package Dependencies
-   - Add các packages tương ứng
+   - Add corresponding packages
    - Rebuild project
-4. Restart Xcode và rebuild
+4. Restart Xcode and rebuild
 
 ### Android: "Unable to resolve host"
 
 **Solution:**
-1. Check INTERNET permission trong AndroidManifest.xml
-2. Restart emulator với Cold Boot
-3. Verify emulator có internet connection
-4. Test trên real device
+1. Check INTERNET permission in AndroidManifest.xml
+2. Restart emulator with Cold Boot
+3. Verify emulator has internet connection
+4. Test on real device
 
 ### Build Error: "commonizeCInterop failed"
 
 **Solution:**
-- Đã được handle trong library với \`kotlin.mpp.enableCInteropCommonization=false\`
-- Nếu vẫn gặp lỗi, thử clean cache:
+- Already handled in library with \`kotlin.mpp.enableCInteropCommonization=false\`
+- If still encountering errors, try cleaning cache:
   \`\`\`bash
   ./gradlew clean
   ./gradlew --stop
   rm -rf .gradle build
   \`\`\`
 
-##  Updating Library
+## 🔄 Updating Library
 
 \`\`\`bash
-# Update version trong build.gradle.kts
+# Update version in build.gradle.kts
 implementation("$group:$artifact:NEW_VERSION")
 
 # Sync dependencies
@@ -207,36 +206,35 @@ implementation("$group:$artifact:NEW_VERSION")
 
 ## 📝 Notes
 
-- Library sử dụng coroutines, đảm bảo gọi từ coroutine scope
-- Tất cả network operations là suspend functions
-- iOS requires native frameworks integration (xem Step 3)
-- Android cần INTERNET permission
+- Library uses coroutines, ensure calling from coroutine scope
+- All network operations are suspend functions
+- iOS requires native frameworks integration (see Step 3)
 
 ## 💡 Best Practices
 
-1. **Error Handling**: Always wrap network calls trong try-catch
-2. **Timeouts**: Default timeout là 30 seconds
-3. **Threading**: Network calls tự động chạy trên IO dispatcher
-4. **Memory**: Networking instances are lightweight, có thể create nhiều lần
+1. **Error Handling**: Always wrap network calls in try-catch
+2. **Timeouts**: Default timeout is 30 seconds
+3. **Threading**: Network calls automatically run on IO dispatcher
+4. **Memory**: Networking instances are lightweight, can be created multiple times
 
 ## 🆘 Support
 
-Nếu gặp vấn đề, check:
+If you encounter issues, check:
 1. [Troubleshooting section](#-troubleshooting)
-2. Build logs trong Gradle/Xcode
-3. Verify iOS frameworks dependencies đã được integrate đầy đủ
+2. Build logs in Gradle/Xcode
+3. Verify iOS framework dependencies are fully integrated
 
 ---
 
 **Generated by integration.sh** - $(date)
 EOF
 
-    print_info "✓ INTEGRATION.md đã được tạo thành công!"
+    print_info "✓ INTEGRATION.md generated successfully!"
     echo ""
     print_info "Preview:"
     head -20 INTEGRATION.md
     echo ""
-    print_info "Xem toàn bộ: cat INTEGRATION.md"
+    print_info "View full: cat INTEGRATION.md"
 }
 
 # Main
