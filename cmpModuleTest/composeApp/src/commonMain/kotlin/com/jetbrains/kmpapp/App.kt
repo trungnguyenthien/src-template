@@ -21,6 +21,9 @@ object ListDestination
 @Serializable
 data class DetailDestination(val objectId: Int)
 
+@Serializable
+object NetworkingDemoDestination
+
 @Composable
 fun App() {
     MaterialTheme(
@@ -28,7 +31,10 @@ fun App() {
     ) {
         Surface {
             val navController: NavHostController = rememberNavController()
-            NavHost(navController = navController, startDestination = ListDestination) {
+            NavHost(navController = navController, startDestination = NetworkingDemoDestination) {
+                composable<NetworkingDemoDestination> {
+                    NetworkingDemoScreen()
+                }
                 composable<ListDestination> {
                     ListScreen(navigateToDetails = { objectId ->
                         navController.navigate(DetailDestination(objectId))

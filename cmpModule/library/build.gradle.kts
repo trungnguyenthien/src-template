@@ -50,6 +50,8 @@ kotlin {
         
         pod("AFNetworking") {
             version = "~> 4.0"
+            // Không enable modules hoặc static frameworks để tránh Metal conflicts
+            extraOpts = listOf("-compiler-option", "-fmodules")
         }
     }
 

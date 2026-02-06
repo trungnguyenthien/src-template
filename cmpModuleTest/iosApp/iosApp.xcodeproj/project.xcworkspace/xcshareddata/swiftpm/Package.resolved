@@ -1,0 +1,15 @@
+{
+  "originHash" : "205dd37eb05f8b17d2a36900744abc569930b2f95def26e78d64bce86956844a",
+  "pins" : [
+    {
+      "identity" : "afnetworking",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AFNetworking/AFNetworking.git",
+      "state" : {
+        "revision" : "6ec99c9134c7eef2c10a93a80bd26db33f921bb4",
+        "version" : "4.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}
